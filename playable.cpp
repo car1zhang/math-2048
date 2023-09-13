@@ -1,8 +1,11 @@
 #include "game.h"
+#include "rng.h"
 
 int main() {
   ios::sync_with_stdio(0);
-  Game* game = new Game();
+  cout<<"This game uses WASD controls and standard IO.\n";
+  Rng* rng=new Rng();
+  Game* game=new Game(2,2048,rng);
   game->printGrid();
   while(1) {
     char move;
@@ -10,28 +13,32 @@ int main() {
     switch(move) {
       case 'w': 
         if(game->moveUp()) {
-          game->generateTile();
           game->printGrid();
         }
         break;
       case 'a':
         if(game->moveLeft()) {
-          game->generateTile();
           game->printGrid();
         }
         break;
       case 's':
         if(game->moveDown()) {
-          game->generateTile();
           game->printGrid();
         }
         break;
       case 'd':
         if(game->moveRight()) {
-          game->generateTile();
           game->printGrid();
         }
         break;
+    }
+    if(game->getIsWon()) {
+      cout<<"You win!\n"<<"Score: "<<game->getScore()<<'\n'<<"Moves: "<<game->getNumMoves()<<'\n';
+      break;
+    }
+    if(game->getIsLost()) {
+      cout<<"You lose.\n"<<"Score: "<<game->getScore()<<'\n'<<"Moves: "<<game->getNumMoves()<<'\n';
+      break;
     }
   }
   return 0;
