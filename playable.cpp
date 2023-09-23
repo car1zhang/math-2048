@@ -5,7 +5,7 @@ int main() {
   ios::sync_with_stdio(0);
   cout<<"This game uses WASD controls and standard IO.\n";
   Rng* rng=new Rng();
-  Game* game=new Game(2,2048,rng);
+  Game* game=new Game(4,2048,rng);
   game->printGrid();
   while(1) {
     char move;

@@ -32,7 +32,7 @@ class Game {
 
   bool moveUp() {
     if(!canMoveUp()) return 0;
-    for(auto &i:merged) std::fill(i.begin(),i.end(),0);
+    for(auto &i:merged) fill(i.begin(),i.end(),0);
     for(int r=1;r<=boardSize;++r) {
       for(int c=1;c<=boardSize;++c) {
         int curr=game[r][c];
@@ -59,7 +59,7 @@ class Game {
 
   bool moveDown() {
     if(!canMoveDown()) return 0;
-    for(auto &i:merged) std::fill(i.begin(),i.end(),0);
+    for(auto &i:merged) fill(i.begin(),i.end(),0);
     for(int r=boardSize;r>=1;--r) {
       for(int c=1;c<=boardSize;++c) {
         int curr=game[r][c];
@@ -86,7 +86,7 @@ class Game {
 
   bool moveLeft() {
     if(!canMoveLeft()) return 0;
-    for(auto &i:merged) std::fill(i.begin(),i.end(),0);
+    for(auto &i:merged) fill(i.begin(),i.end(),0);
     for(int r=1;r<=boardSize;++r) {
       for(int c=1;c<=boardSize;++c) {
         int curr=game[r][c];
@@ -113,7 +113,7 @@ class Game {
 
   bool moveRight() {
     if(!canMoveRight()) return 0;
-    for(auto &i:merged) std::fill(i.begin(),i.end(),0);
+    for(auto &i:merged) fill(i.begin(),i.end(),0);
     for(int r=1;r<=boardSize;++r) {
       for(int c=boardSize;c>=1;--c) {
         int curr=game[r][c];
@@ -148,6 +148,7 @@ class Game {
   }
   int getScore() { return score; }
   int getNumMoves() { return numMoves; }
+  vector<int> getRow(int r) { return game[r]; }
   int getValueAt(int r,int c) { return game[r][c]; }
   int getMaxTileIn(int r1,int c1,int r2,int c2) {
     int maxTile=0;

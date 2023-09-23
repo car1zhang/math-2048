@@ -29,6 +29,10 @@ int main() {
     Game* game = new Game(size,target,rng);
 
     while(1) {
+      if(trials==1) {
+        cout<<'\n';
+        game->printGrid();
+      }
       bool moved=0;
       if(game->getIsWon()) {
         ++wins;
@@ -59,22 +63,10 @@ int main() {
         }
       }
       if(moved) continue;
-      // direct merges into bottom row
-      for(int c=1;c<=4;++c) {
-        for(int r=3;r>=1;--r) {
-          if(game->getValueAt(r,c)>0) {
-            if(game->getValueAt(r,c)==game->getValueAt(4,c)) {
-              game->moveDown();
-              moved=1;
-            } else break;
-          }
-        }
-      }
-      if(moved) continue;
       // check for gaps in bottom row
       for(int c=1;c<=4;++c) {
         if(game->getValueAt(4,c)==0) {
-          // plug from left if possible
+          // plug from right if possible
           if(game->getMaxTileIn(4,c+1,4,4)>0) game->moveLeft();
           // try to plug from above
           else {
@@ -84,22 +76,174 @@ int main() {
                   game->moveUp();
           }
           moved=1;
+          break;
         }
       }
       if(moved) continue;
-      // align 3rd row
-      // if 3rd row is clogged
-        // look at 2nd row
-      // otherwise evaluate left, right, down
-        // left if row 3 blocking row 4
-        // otherwise
-          // right if leads to direct merges with row 4
-          // down if direct merges into row 3
-          // right if it doesn't block row 4
+      // direct merges into bottom row
+      for(int c=1;c<=4;++c) {
+        for(int r=3;r>=1;--r) {
+          if(game->getValueAt(r,c)>0) {
+            if(game->getValueAt(r,c)==game->getValueAt(4,c)) {
+              game->moveDown();
+              moved=1;
+              break;
+            } else break;
+          }
+        }
+        if(moved) break;
+      }
+      if(moved) continue;
+
+      // hypothetical left and right 3rd row
+      vector<int> arrRight3(6),arrLeft3(6);
+      vector<bool> merged(6,0);
+      fill(merged.begin(),merged.end(),0);
+      for(int c=4;c>=1;--c) {
+        int curr=game->getValueAt(3,c);
+        if(curr==0) continue;
+        for(int i=c+1;i<=5;++i) {
+          if(arrRight3[i]==curr&&!merged[i]) {
+            arrRight3[i]+=curr;
+            merged[i]=1;
+            break;
+          }
+          if(i==5||arrRight3[i]>0) {
+            arrRight3[i-1]=curr;
+            break;
+          }
+        }
+      }
+      fill(merged.begin(),merged.end(),0);
+      for(int c=1;c<=4;++c) {
+        int curr=game->getValueAt(3,c);
+        if(curr==0) continue;
+        for(int i=c-1;i>=0;--i) {
+          if(arrLeft3[i]==curr&&!merged[i]) {
+            arrLeft3[i]+=curr;
+            merged[i]=1;
+            break;
+          }
+          if(i==0||arrLeft3[i]>0) {
+            arrLeft3[i+1]=curr;
+            break;
+          }
+        }
+      }
+      if(arrLeft3!=arrRight3) {
+      // otherwise align third row
+        int valueLeft=0,valueRight=0;
+        for(int c=1;c<=4;++c) {
+          valueLeft+=(arrLeft3[c]==game->getValueAt(4,c))*arrLeft3[c];
+          valueRight+=(arrRight3[c]==game->getValueAt(4,c))*arrRight3[c];
+        }
+        if(valueLeft>valueRight) {
+          if(game->moveLeft()) moved=1;
+        } else if(valueLeft<valueRight) {
+          if(game->moveRight()) moved=1;
+        } else {
+          int penaltyLeft=0,penaltyRight=0,penaltyCurr=0;
+          for(int c=1;c<=4;++c) {
+            penaltyLeft+=max(0,arrLeft3[c]-game->getValueAt(4,c));
+            penaltyRight+=max(0,arrRight3[c]-game->getValueAt(4,c));
+            penaltyCurr+=max(0,game->getValueAt(3,c)-game->getValueAt(4,c));
+          }
+          if(penaltyRight<=penaltyLeft&&penaltyRight<penaltyCurr) {
+            game->moveRight();
+            moved=1;
+          }
+          if(penaltyLeft<=penaltyRight&&penaltyLeft<penaltyCurr) {
+            game->moveLeft();
+            moved=1;
+          }
+        }
+      }
+      if(moved) continue;
+      // direct merges into 3rd row
+      for(int c=1;c<=4;++c) {
+        for(int r=2;r>=1;--r) {
+          if(game->getValueAt(r,c)>0) {
+            if(game->getValueAt(r,c)==game->getValueAt(3,c)) {
+              game->moveDown();
+              moved=1;
+              break;
+            } else break;
+          }
+        }
+        if(moved) break;
+      }
+      if(moved) continue;
+/*
+      // hypothetical left and right 2nd row
+      vector<int> arrRight2(6),arrLeft2(6);
+      fill(merged.begin(),merged.end(),0);
+      for(int c=4;c>=1;--c) {
+        int curr=game->getValueAt(3,c);
+        if(curr==0) continue;
+        for(int i=c+1;i<=5;++i) {
+          if(arrRight2[i]==curr&&!merged[i]) {
+            arrRight2[i]+=curr;
+            merged[i]=1;
+            break;
+          }
+          if(i==5||arrRight2[i]>0) {
+            arrRight2[i-1]=curr;
+            break;
+          }
+        }
+      }
+      fill(merged.begin(),merged.end(),0);
+      for(int c=1;c<=4;++c) {
+        int curr=game->getValueAt(3,c);
+        if(curr==0) continue;
+        for(int i=c-1;i>=0;--i) {
+          if(arrLeft2[i]==curr&&!merged[i]) {
+            arrLeft2[i]+=curr;
+            merged[i]=1;
+            break;
+          }
+          if(i==0||arrLeft2[i]>0) {
+            arrLeft2[i+1]=curr;
+            break;
+          }
+        }
+      }
+      if(arrLeft2 != arrRight2) {
+      // otherwise align third row
+        int valueLeft=0,valueRight=0;
+        for(int c=1;c<=4;++c) {
+          valueLeft+=(arrLeft2[c]==game->getValueAt(4,c))*arrLeft2[c];
+          valueRight+=(arrRight2[c]==game->getValueAt(4,c))*arrRight2[c];
+        }
+        if(valueLeft>valueRight) {
+          if(game->moveLeft()) moved=1;
+        } else if(valueLeft<valueRight) {
+          if(game->moveRight()) moved=1;
+        } else {
+          int penaltyLeft=0,penaltyRight=0,penaltyCurr=0;
+          for(int c=1;c<=4;++c) {
+            penaltyLeft+=max(0,arrLeft2[c]-game->getValueAt(4,c));
+            penaltyRight+=max(0,arrRight2[c]-game->getValueAt(4,c));
+            penaltyCurr+=max(0,game->getValueAt(3,c)-game->getValueAt(4,c));
+          }
+          if(penaltyRight<=penaltyLeft&&penaltyRight<penaltyCurr) {
+            game->moveRight();
+            moved=1;
+          }
+          if(penaltyLeft<=penaltyRight&&penaltyLeft<penaltyCurr) {
+            game->moveLeft();
+            moved=1;
+          }
+          if(penaltyRight==0) {
+            if(game->moveRight()) moved=1;
+          }
+        }
+      }
+      if(moved) continue;*/
 
       if(!game->moveDown())
-        if(!game->moveRight())
-          if(!game->moveLeft())
+        if(!game->moveLeft())
+          if(!game->moveRight())
             game->moveUp();
     }
   }
