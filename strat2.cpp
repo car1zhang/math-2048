@@ -156,6 +156,9 @@ int main() {
             game->moveLeft();
             moved=1;
           }
+          if(penaltyRight==0) {
+            if(game->moveRight()) moved=1;
+          }
         }
       }
       if(moved) continue;
@@ -242,8 +245,8 @@ int main() {
       if(moved) continue;*/
 
       if(!game->moveDown())
-        if(!game->moveLeft())
-          if(!game->moveRight())
+        if(!game->moveRight())
+          if(!game->moveLeft())
             game->moveUp();
     }
   }
