@@ -95,7 +95,7 @@ class Game {
         for(int i=c-1;i>=0;--i) {
           if(game[r][i]==curr&&!merged[r][i]) {
             game[r][i]+=curr;
-            score+=game[i][c];
+            score+=game[r][i];
             merged[r][i]=1;
             break;
           }
@@ -122,7 +122,7 @@ class Game {
         for(int i=c+1;i<=boardSize+1;++i) {
           if(game[r][i]==curr&&!merged[r][i]) {
             game[r][i]+=curr;
-            score+=game[i][c];
+            score+=game[r][i];
             merged[r][i]=1;
             break;
           }
