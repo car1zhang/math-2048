@@ -138,31 +138,31 @@ class Game {
     return 1;
   }
 
-  const bool getIsLost() {
+  bool getIsLost() {
     return !(canMoveUp()||canMoveDown()||canMoveLeft()||canMoveRight());
   }
-  const bool getIsWon() {
+  bool getIsWon() {
     bool found=0;
     for(int r=1;r<=boardSize;++r) for(int c=1;c<=boardSize;++c) if(game[r][c]>=winValue) found=1;
     return found;
   }
-  const int getScore() { return score; }
-  const int getNumMoves() { return numMoves; }
-  const vector<vector<int>> getGrid() { return game; }
-  const int getValueAt(int r,int c) { return game[r][c]; }
-  const int getMaxTileIn(int r1,int c1,int r2,int c2) {
+  int getScore() { return score; }
+  int getNumMoves() { return numMoves; }
+  vector<int> getRow(int r) { return game[r]; }
+  int getValueAt(int r,int c) { return game[r][c]; }
+  int getMaxTileIn(int r1,int c1,int r2,int c2) {
     int maxTile=0;
     for(int r=r1;r<=r2;++r) for(int c=c1;c<=c2;++c) maxTile=max(maxTile,game[r][c]);
     return maxTile;
   }
-  const int getMinTileIn(int r1,int c1,int r2,int c2) {
+  int getMinTileIn(int r1,int c1,int r2,int c2) {
     int minTile=0;
     for(int r=r1;r<=r2;++r) for(int c=c1;c<=c2;++c) minTile=min(minTile,game[r][c]);
     return minTile;
   }
 
   private:
-  const bool canMoveUp() {
+  bool canMoveUp() {
     bool valid=0;
     for(int r=2;r<=boardSize;++r) {
       for(int c=1;c<=boardSize;++c) {
@@ -171,7 +171,7 @@ class Game {
     }
     return valid;
   }
-  const bool canMoveDown() {
+  bool canMoveDown() {
     bool valid=0;
     for(int r=1;r<=boardSize-1;++r) {
       for(int c=1;c<=boardSize;++c) {
@@ -180,7 +180,7 @@ class Game {
     }
     return valid;
   }
-  const bool canMoveLeft() {
+  bool canMoveLeft() {
     bool valid=0;
     for(int r=1;r<=boardSize;++r) {
       for(int c=2;c<=boardSize;++c) {
@@ -189,7 +189,7 @@ class Game {
     }
     return valid;
   }
-  const bool canMoveRight() {
+  bool canMoveRight() {
     bool valid=0;
     for(int r=1;r<=boardSize;++r) {
       for(int c=1;c<=boardSize-1;++c) {
